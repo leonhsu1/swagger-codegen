@@ -3,7 +3,7 @@ package {{packageName}}.infrastructure
 import okhttp3.*
 import java.io.File
 
-open class ApiClient(val baseUrl: String, val okHttpClientProvider: () -> OkHttpClient = { OkHttpClient() }) {
+open class ApiClient(val baseUrl: String, val okHttpClientProvider: () -> OkHttpClient = { lazy { OkHttpClient() }.value }) {
     companion object {
         protected val ContentType = "Content-Type"
         protected val Accept = "Accept"
