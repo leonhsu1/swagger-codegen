@@ -3,7 +3,7 @@ package {{packageName}}.infrastructure
 import okhttp3.*
 import java.io.File
 
-open class ApiClient(val baseUrl: String, okHttpClientBuilder: () -> OkHttpClientBuilder = { OkHttpClient.Builder() }) {
+open class ApiClient(val baseUrl: String, okHttpClientProvider: () -> OkHttpClient = { OkHttpClient() }) {
     companion object {
         protected val ContentType = "Content-Type"
         protected val Accept = "Accept"
@@ -12,7 +12,7 @@ open class ApiClient(val baseUrl: String, okHttpClientBuilder: () -> OkHttpClien
         protected val XmlMediaType = "application/xml"
 
         @JvmStatic
-        val client : OkHttpClient = okHttpClientBuilder().build()
+        val client : OkHttpClient = okHttpClientProvider()
 
         @JvmStatic
         var defaultHeaders: Map<String, String> by ApplicationDelegates.setOnce(mapOf(ContentType to JsonMediaType, Accept to JsonMediaType))
