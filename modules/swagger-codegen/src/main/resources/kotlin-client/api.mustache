@@ -40,9 +40,8 @@ class {{classname}}(basePath: kotlin.String = "{{{basePath}}}", httpClient: OkHt
             ResponseType.Success -> {{#returnType}}(response as Success<*>).data as {{{returnType}}}{{/returnType}}{{^returnType}}Unit{{/returnType}}
             ResponseType.Informational -> TODO()
             ResponseType.Redirection -> TODO()
-            ResponseType.ClientError -> throw ClientException((response as ClientError<*>).body as? String ?: "Client error")
+            ResponseType.ClientError -> throw ClientException((response as ClientError<*>).body as? String ?: "Client error", (response as ClientError<*>).statusCode)
             ResponseType.ServerError -> throw ServerException((response as ServerError<*>).message ?: "Server error")
-            else -> throw kotlin.IllegalStateException("Undefined ResponseType.")
         }
     }
 
