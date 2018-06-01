@@ -23,6 +23,10 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    from sourceSets.main.allSource
+}
+
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib-jre8:$kotlin_version"
     compile "com.squareup.moshi:moshi-kotlin:1.5.0"
