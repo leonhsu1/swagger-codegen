@@ -5,6 +5,8 @@ import java.lang.RuntimeException
 
 open class ClientException : RuntimeException {
 
+    var statusCode: kotlin.Int = 0
+
     /**
      * Constructs an [ClientException] with no detail message.
      */
@@ -15,7 +17,9 @@ open class ClientException : RuntimeException {
 
      * @param   message   the detail message.
      */
-    constructor(message: kotlin.String) : super(message)
+    constructor(message: kotlin.String, statusCode: kotlin.Int) : super(message) {
+        this.statusCode = statusCode
+    }
 
     companion object {
         private const val serialVersionUID: Long = 123L
