@@ -27,7 +27,12 @@ class {{classname}}(basePath: kotlin.String = "{{{basePath}}}", httpClient: OkHt
     {{#hasQueryParams}}{{#queryParams}}
         {{^required}}if ({{paramName}} != null) localVariableQuery["{{baseName}}"] = {{#isContainer}}toMultiValue({{paramName}}.toList(), "{{collectionFormat}}"){{/isContainer}}{{^isContainer}}listOf("${{paramName}}"){{/isContainer}}{{/required}}
     {{/queryParams}}{{/hasQueryParams}}
-        val localVariableHeaders: kotlin.collections.Map<kotlin.String,kotlin.String> = mapOf({{#hasFormParams}}"Content-Type" to "multipart/form-data"{{/hasFormParams}}{{^hasHeaderParams}}){{/hasHeaderParams}}{{#hasHeaderParams}}{{#hasFormParams}}, {{/hasFormParams}}{{#headerParams}}"{{baseName}}" to {{#isContainer}}{{paramName}}.joinToString(separator = collectionDelimiter("{{collectionFormat}}"){{/isContainer}}{{^isContainer}}{{paramName}}{{/isContainer}}{{#hasMore}}, {{/hasMore}}{{/headerParams}}){{/hasHeaderParams}}
+
+        val localVariableHeaders: kotlin.collections.MutableMap<kotlin.String,kotlin.String> = mutableMapOf({{#hasFormParams}}"Content-Type" to "multipart/form-data"{{/hasFormParams}}{{^hasHeaderParams}}){{/hasHeaderParams}}{{#hasHeaderParams}}{{#hasFormParams}}, {{/hasFormParams}}{{#headerParams}}{{#required}}"{{baseName}}" to {{#isContainer}}{{paramName}}.joinToString(separator = collectionDelimiter("{{collectionFormat}}"){{/isContainer}}{{^isContainer}}{{paramName}}{{/isContainer}}{{#hasMore}}, {{/hasMore}}{{/required}}{{/headerParams}}){{/hasHeaderParams}}
+    {{#hasHeaderParams}}{{#headerParams}}
+        {{^required}}if ({{paramName}} != null) localVariableHeaders["{{baseName}}"] = {{#isContainer}}toMultiValue({{paramName}}.toList(), "{{collectionFormat}}"){{/isContainer}}{{^isContainer}}listOf("${{paramName}}"){{/isContainer}}{{/required}}
+    {{/headerParams}}{{/hasHeaderParams}}
+
         val localVariableConfig = RequestConfig(
             RequestMethod.{{httpMethod}},
             "{{path}}"{{#pathParams}}.replace("{"+"{{baseName}}"+"}", "${{paramName}}"){{/pathParams}},
