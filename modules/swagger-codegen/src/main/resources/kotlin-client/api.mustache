@@ -23,14 +23,13 @@ class {{classname}}(basePath: kotlin.String = "{{{basePath}}}", httpClient: OkHt
     @Suppress("UNCHECKED_CAST"){{/returnType}}
     fun {{operationId}}({{#allParams}}{{paramName}}: {{{dataType}}}{{^required}}?{{/required}}{{#hasMore}}, {{/hasMore}}{{/allParams}}) : {{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Unit{{/returnType}} {
         val localVariableBody: kotlin.Any? = {{#hasBodyParam}}{{#bodyParams}}{{paramName}}{{/bodyParams}}{{/hasBodyParam}}{{^hasBodyParam}}{{^hasFormParams}}null{{/hasFormParams}}{{#hasFormParams}}mapOf({{#formParams}}"{{{baseName}}}" to "${{paramName}}"{{#hasMore}}, {{/hasMore}}{{/formParams}}){{/hasFormParams}}{{/hasBodyParam}}
-        val localVariableQuery: MutableMap<String,List<String?>> = {{^hasQueryParams}}mapOf(){{/hasQueryParams}}{{#hasQueryParams}}mapOf({{#queryParams}}"{{baseName}}" to {{#isContainer}}toMultiValue({{paramName}}.toList(), "{{collectionFormat}}"){{/isContainer}}{{^isContainer}}listOf("${{paramName}}"){{/isContainer}}{{#hasMore}}, {{/hasMore}}{{/queryParams}}){{/hasQueryParams}}
+        val localVariableQuery: Map<String,List<String?>> = {{^hasQueryParams}}mapOf(){{/hasQueryParams}}{{#hasQueryParams}}mapOf({{#queryParams}}"{{baseName}}" to {{#isContainer}}toMultiValue({{paramName}}.toList(), "{{collectionFormat}}"){{/isContainer}}{{^isContainer}}listOf("${{paramName}}"){{/isContainer}}{{#hasMore}}, {{/hasMore}}{{/queryParams}}){{/hasQueryParams}}
         val localVariableHeaders: kotlin.collections.Map<kotlin.String,kotlin.String?> = mapOf({{#hasFormParams}}"Content-Type" to "multipart/form-data"{{/hasFormParams}}{{^hasHeaderParams}}){{/hasHeaderParams}}{{#hasHeaderParams}}{{#hasFormParams}}, {{/hasFormParams}}{{#headerParams}}"{{baseName}}" to {{#isContainer}}{{paramName}}.joinToString(separator = collectionDelimiter("{{collectionFormat}}"){{/isContainer}}{{^isContainer}}{{paramName}}{{/isContainer}}{{#hasMore}}, {{/hasMore}}{{/headerParams}}){{/hasHeaderParams}}
-
 
         val localVariableConfig = RequestConfig(
             RequestMethod.{{httpMethod}},
             "{{path}}"{{#pathParams}}.replace("{"+"{{baseName}}"+"}", "${{paramName}}"){{/pathParams}},
-            query = localVariableQuery.mapNotNull { (key, value) -> if (value.isNotEmpty()) key to value else null }.toMap(),
+            query = localVariableQuery.mapNotNull { (key, value) -> if (value.count { it != null } > 0) key to value.filterNotNull() else null }.toMap(),
             headers = localVariableHeaders.mapNotNull { (key, value) -> if (value != null) key to value else null }.toMap()
         )
         val response = request<{{#returnType}}{{{returnType}}}{{/returnType}}{{^returnType}}Any?{{/returnType}}>(
